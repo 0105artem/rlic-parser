@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+
+  redis:
+    container_name: redis-docker
+    image: redis:alpine
+    restart: always
+    command: /bin/sh -c "redis-server --save 20 1 --loglevel warning --requirepass $$REDIS_PASSWORD"
+    env_file:
+      - .env
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis:/data
+    networks:
+      - redis
+
+  postgres:
+    container_name: postgres-docker
+    image: postgres:14-alpine
+    expose:
+      - "5555"
+    ports:
+      - "5555:5555"
+    command: -p 5555
+    env_file:
+      - .env
+    volumes:
+      - ./docker/pg-data:/var/lib/postgresql/data
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-database.sh
+    networks:
+      - postgres
+
+  parser:
+    container_name: rlic-parser-docker
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env
+    build: .
+    volumes:
+      - ./:/usr/src/app
+    networks:
+      - redis
+      - postgres
+
+networks:
+  redis:
+    driver: bridge
+    name: redis_network
+  postgres:
+    driver: bridge
+    name: postgres_network
+
+volumes:
+  postgres-db:
+    driver: local
+  redis:
+    driver: local
+
+
+
