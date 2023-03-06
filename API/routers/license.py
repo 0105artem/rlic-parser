@@ -23,6 +23,22 @@ async def get_licenses(limit: int = Query(default=100, le=1000, ge=0),
     return await license_dal.get_all_licenses(limit, skip)
 
 
+async def csv_bg_task(num_results, license_dal):
+    # Creating csv file with all licenses
+    licenses = []
+    for i in range(0, num_results - 1000, 10000):
+        offset = i
+        limit = 1000
+        chunk = await license_dal.get_all_licenses(limit=limit, offset=offset)
+        licenses += chunk
+
+    header = list(licenses[0].__dict__.keys())[1:]
+    values = [list(license.__dict__.values())[1:] for license in licenses]
+    csv_filename = f"active_licenses_{current_date()}.zip"
+
+    await create_csv(header, values, csv_filename)
+
+
 @router.get("/csv")
 async def get_csv(bg_tasks: BackgroundTasks, license_dal: LicenseDAL = Depends(get_license_dal),
                   statistics_dal: StatisticsDAL = Depends(get_statistics_dal)):
@@ -30,22 +46,10 @@ async def get_csv(bg_tasks: BackgroundTasks, license_dal: LicenseDAL = Depends(g
     if latest_parsing:
         csv_filename = latest_parsing.csv_file
         if csv_filename is None:
-            # Creating csv file with all licenses
-            licenses = []
-            for i in range(0, latest_parsing.num_results-10000, 10000):
-                offset = i
-                limit = 10000
-                chunk = await license_dal.get_all_licenses(limit=limit, offset=offset)
-                licenses += chunk
-
-            header = list(licenses[0].__dict__.keys())[1:]
-            values = [list(license.__dict__.values())[1:] for license in licenses]
-
-            csv_filename = f"active_licenses_{current_date()}.zip"
-            bg_tasks.add_task(create_csv, header, values, csv_filename)
-
-#            await statistics_dal.set_csv_file(task_id=latest_parsing.task_id, csv_filename=csv_filename)
-            return {"url": f"{env.HOSTNAME}/files/csv/{csv_filename}"}
+            bg_tasks.add_task(csv_bg_task, latest_parsing.num_results)
+            await statistics_dal.set_csv_file(task_id=latest_parsing.task_id, csv_filename=csv_filename)
+            return {"msg": "CSV file will be available at the link shortly.",
+                    "url": f"{env.HOSTNAME}/files/csv/{csv_filename}"}
         else:
             return {"url": f"{env.HOSTNAME}/files/csv/{csv_filename}"}
     else:
