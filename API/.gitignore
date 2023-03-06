@@ -142,6 +142,3 @@ dmypy.json
 #.idea/modules.xml
 #.idea/vagrant.xml
 #.idea/vcs.xml
-
-# csv files
-files/
