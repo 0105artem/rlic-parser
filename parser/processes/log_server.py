@@ -9,7 +9,7 @@ from src.utils import current_date
 
 
 class RedisLogServer(mp.Process):
-    def __init__(self, event: mp.Event, output: str = f"./logs/log_files/{current_date()}.log",
+    def __init__(self, event: mp.Event, output: str = f"/logs/log_files/{current_date()}.log",
                  rq_name: str = "logging_queue") -> None:
         """
         :param event: Flag when to stop LogServer.
@@ -27,6 +27,11 @@ class RedisLogServer(mp.Process):
         """
         :param pause: How long to sleep while the redis queue with logs empty to not overload Redis with RPOP requests.
         """
+        if not os.path.exists('./logs/log_files'):
+            print(os.getcwd())
+            os.makedirs('./logs/log_files')
+
+
         try:
             logger.info(f"Starting Process for writing logs. PID: {os.getpid()}")
             while self.redis_client.llen(self.rq_name) or not self.event.is_set():

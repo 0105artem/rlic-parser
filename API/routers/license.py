@@ -30,7 +30,11 @@ async def get_csv(bg_tasks: BackgroundTasks, license_dal: LicenseDAL = Depends(g
         csv_filename = latest_parsing.csv_file
         if csv_filename is None:
             # Creating csv file with all licenses
-            licenses = await license_dal.get_all_licenses()
+            licenses = []
+            for i in range(0, latest_parsing.num_results-1000, 1000):
+                offset = i
+                limit = i + 1000
+                licenses.append(await license_dal.get_all_licenses(limit=limit, offset=offset))
             header = list(licenses[0].__dict__.keys())[1:]
             values = [list(license.__dict__.values())[1:] for license in licenses]
 
