@@ -26,7 +26,7 @@ async def get_licenses(limit: int = Query(default=100, le=1000, ge=0),
 async def csv_bg_task(num_results, license_dal, csv_filename):
     # Creating csv file with all licenses
     licenses = []
-    for i in range(0, num_results - 1000, 10000):
+    for i in range(0, num_results - 1000, 1000):
         offset = i
         limit = 1000
         chunk = await license_dal.get_all_licenses(limit=limit, offset=offset)
