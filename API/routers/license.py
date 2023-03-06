@@ -43,7 +43,7 @@ async def get_csv(bg_tasks: BackgroundTasks, license_dal: LicenseDAL = Depends(g
             csv_filename = f"active_licenses_{current_date()}.zip"
             bg_tasks.add_task(create_csv, header, values, csv_filename)
 
-            # await statistics_dal.set_csv_file(task_id=latest_parsing.task_id, csv_filename=csv_filename)
+            await statistics_dal.set_csv_file(task_id=latest_parsing.task_id, csv_filename=csv_filename)
             return {"url": f"{env.HOSTNAME}/files/csv/{csv_filename}"}
         else:
             return {"url": f"{env.HOSTNAME}/files/csv/{csv_filename}"}
