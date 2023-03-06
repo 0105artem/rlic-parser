@@ -54,11 +54,9 @@ class RlicParserApp:
         logger.info(f"Done worker {worker_id}, PID: {os.getpid()}")
 
     def run(self) -> None:
-        # num_pages, num_licenses = (asyncio.run(get_num_pages())).values()
-        # logger.info(f"Counted {num_pages} pages, {num_licenses} licenses.")
-        # parsing_task.set_value('num_results', num_licenses)
-        num_pages = 15
-        num_licenses = 150
+        num_pages, num_licenses = (asyncio.run(get_num_pages())).values()
+        logger.info(f"Counted {num_pages} pages, {num_licenses} licenses.")
+        parsing_task.set_value('num_results', num_licenses)
         parsing_task.set_value('num_results', num_licenses)
 
         urls = [f'https://islod.obrnadzor.gov.ru/rlic/search/?page={i}' for i in range(1, num_pages + 1)]
