@@ -33,15 +33,17 @@ async def get_csv(bg_tasks: BackgroundTasks, license_dal: LicenseDAL = Depends(g
             licenses = []
             for i in range(0, latest_parsing.num_results-1000, 1000):
                 offset = i
-                limit = i + 1000
-                licenses.append(await license_dal.get_all_licenses(limit=limit, offset=offset))
+                limit = 1000
+                chunk = await license_dal.get_all_licenses(limit=limit, offset=offset)
+                licenses += chunk
+
             header = list(licenses[0].__dict__.keys())[1:]
             values = [list(license.__dict__.values())[1:] for license in licenses]
 
             csv_filename = f"active_licenses_{current_date()}.zip"
             bg_tasks.add_task(create_csv, header, values, csv_filename)
 
-            await statistics_dal.set_csv_file(task_id=latest_parsing.task_id, csv_filename=csv_filename)
+            # await statistics_dal.set_csv_file(task_id=latest_parsing.task_id, csv_filename=csv_filename)
             return {"url": f"{env.HOSTNAME}/files/csv/{csv_filename}"}
         else:
             return {"url": f"{env.HOSTNAME}/files/csv/{csv_filename}"}
