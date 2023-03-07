@@ -5,12 +5,11 @@ from common.redis import parsing_task
 from schemas.parsing_task_schema import ParsingTask
 
 router = APIRouter(
-    prefix="/parser",
-    tags=['Parser']
+    prefix="/parser"
 )
 
 
-@router.post("/run", status_code=status.HTTP_201_CREATED)
+@router.post("/run/", status_code=status.HTTP_201_CREATED, tags=["Run Parser"])
 async def run_parser(validation=Depends(oauth2.validate_user)):
     # Before starting new parsing task check if previous one not running.
     task_status = await parsing_task.get_status()
@@ -23,7 +22,7 @@ async def run_parser(validation=Depends(oauth2.validate_user)):
     return {"task_id": task_id}
 
 
-@router.get("/status", response_model=ParsingTask)
+@router.get("/status/", response_model=ParsingTask, tags=["Get Parsing Status"])
 async def get_parsing_task_status(validation=Depends(oauth2.validate_user)):
     task = await parsing_task.get_task()
     return task

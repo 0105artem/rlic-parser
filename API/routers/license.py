@@ -1,7 +1,6 @@
-import asyncio
 from typing import List
 
-from fastapi import status, HTTPException, Depends, APIRouter, Query, BackgroundTasks
+from fastapi import status, HTTPException, Depends, APIRouter, Query, Path, BackgroundTasks
 
 from common.utils import create_csv, current_date
 from db.dals.license_dal import LicenseDAL
@@ -11,14 +10,14 @@ from schemas import license_schema
 from settings import env
 
 router = APIRouter(
-    prefix="/licenses",
-    tags=['Лицензии']
+    prefix="/licenses"
 )
 
 
-@router.get("/", response_model=List[license_schema.LicenseFromDB])
-async def get_licenses(limit: int = Query(default=100, le=1000, ge=0),
-                       skip: int = Query(default=0, ge=0),
+@router.get("/", response_model=List[license_schema.LicenseFromDB], tags=['Get Licenses'])
+async def get_licenses(limit: int = Query(default=100, le=1000, ge=0, description="Количество получаемых лицензий"),
+                       skip: int = Query(default=0, ge=0,
+                                         description="Количество пропускаемых лицензий с начала списка"),
                        license_dal: LicenseDAL = Depends(get_license_dal)):
     return await license_dal.get_all_licenses(limit, skip)
 
@@ -38,7 +37,7 @@ async def csv_bg_task(num_results, license_dal, csv_filename):
     await create_csv(header, values, csv_filename)
 
 
-@router.get("/csv")
+@router.get("/csv/", tags=["Get CSV"])
 async def get_csv(bg_tasks: BackgroundTasks, license_dal: LicenseDAL = Depends(get_license_dal),
                   statistics_dal: StatisticsDAL = Depends(get_statistics_dal)):
     latest_parsing = await statistics_dal.get_latest_parsing(table='active_licenses')
@@ -57,8 +56,9 @@ async def get_csv(bg_tasks: BackgroundTasks, license_dal: LicenseDAL = Depends(g
                             detail=f"Information about successful parsing was not found")
 
 
-@router.get("/{license_id}", response_model=license_schema.LicenseFromDB)
-async def get_post(license_id: str, license_dal: LicenseDAL = Depends(get_license_dal)):
+@router.get("/{license_id}/", response_model=license_schema.LicenseFromDB, tags=["Get License By Id"])
+async def get_license_by_id(license_id: str = Path(description="Уникальный идентификатор лицензии"),
+                   license_dal: LicenseDAL = Depends(get_license_dal)):
     license = await license_dal.get_license(license_id)
     if not license:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

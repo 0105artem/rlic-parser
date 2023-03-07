@@ -11,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.post('/login', response_model=user_schemas.Token)
+@router.post('/login/', response_model=user_schemas.Token)
 async def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
                 user_dal: UserDAL = Depends(get_user_dal)):
     user = await user_dal.get_user_by(login=user_credentials.username)

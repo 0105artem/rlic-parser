@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
@@ -7,8 +9,13 @@ from routers import license, user, auth, files, parser
 from common.redis import redis_client, parsing_task
 from settings import env
 
+with open("./common/tags.json", "r", encoding='utf-8') as json_file:
+    tags_metadata = json.load(json_file)
 
-app = FastAPI()
+with open("./common/metadata.json", "r", encoding='utf-8') as json_file:
+    metadata = json.load(json_file)
+
+app = FastAPI(title=metadata[0]['title'], description=metadata[0]['description'], openapi_tags=tags_metadata)
 
 
 @app.on_event("startup")
