@@ -32,6 +32,7 @@
 - Все python зависимости содержатся в [`parser/requirements.txt`](https://github.com/0105artem/rlic-parser/blob/main/parser/requirements.txt) и [`API/requirements.txt`](https://github.com/0105artem/rlic-parser/blob/main/API/requirements.txt)
             
 ### Docker
+***
 Если у вас установлен docker и docker-compose, то данный способ установки рекомендуемый, в противном случае следуйте инструкция по установке без Docker.
 #### Setting up the parser
 1. В терминале откройте директорию `./parser`, содержащую `docker-compose.yml` file.
