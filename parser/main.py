@@ -78,6 +78,7 @@ if __name__ == "__main__":
     app.configure_logger()
     app.log_server.start()
     parsing_task = ParsingTask(app.redis_client)
+    parsing_task.init_hash()
 
     while True:
         if parsing_task.get_value('status') == 'active':
