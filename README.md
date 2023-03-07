@@ -24,17 +24,16 @@
 ## Setup
 Следуйте шагам описанными ниже, чтобы поднять окружение на локальной машине.
 
-#### Dependencies
+### Dependencies
 - python 3.7+
 - Docker/Docker-Compose (optional) 
 - PostgreSQL (опционально если используете Docker) 
 - Redis (опционально если используете Docker) 
 - Все python зависимости содержатся в [`parser/requirements.txt`](https://github.com/0105artem/rlic-parser/blob/main/parser/requirements.txt) и [`API/requirements.txt`](https://github.com/0105artem/rlic-parser/blob/main/API/requirements.txt)
             
-### Docker
-***
+## Docker
 Если у вас установлен docker и docker-compose, то данный способ установки рекомендуемый, в противном случае следуйте инструкция по установке без Docker.
-#### Setting up the parser
+### Setting up the parser
 1. В терминале откройте директорию `./parser`, содержащую `docker-compose.yml` file.
 2. Создайте `.env` файл, скопировав в него содержимое файла `parser/.env.sample`. Измените следующие переменные:
    - `POSTGRES_PASSWORD` -- пароль к PostgreSQL пользователя postgres
@@ -43,15 +42,15 @@
    - `REDIS_PASSWORD` -- пароль для Redis Server
 3. Пропишите команду `docker-compose up --build -d` чтобы запустить сервис. Вы увидите как Docker построит и запустит контейнеры с парсером, Redis и PostgreSQL.
 
-#### Setting up the API
+### Setting up the API
 1. После запуска Docker контейнеров с парсером, PostgreSQL и Redis откройте директорию `./API`.
 2. Создайте `.env` файл, скопировав в него содержимое файла `API/.env.sample`. Измените переменные `POSTGRES_PASSWORD`, `DB_USERNAME`, `DB_USER_PASSWORD`, `REDIS_PASSWORD` в соответствии с `parser/.env` файлом.
 3. Пропишите команду `docker-compose up --build -d` чтобы запустить сервер. Вы увидите как Docker построит и запустит контейнер с API.
 4. Зайдите в браузер и перейдите по адресу `http://localhost:8000/`. Если вы увидите документацию к API, значит вы успешно запустили сервер и готовы к использованию API.
 
-### Non-dockerized setting up
+## Non-dockerized setting up
 Для работы данной установки понадобятся PostgreSQL и Redis-Server, локально установленные на вашей системе.
-#### Setting up the parser
+### Setting up the parser
 1. В терминале откройте директорию `./parser`
 2. Создайте `.env` файл, скопировав в него содержимое файла `parser/.env.sample`. Измените следующие переменные:
    - `POSTGRES_PASSWORD` -- пароль к PostgreSQL пользователя postgres
@@ -80,7 +79,7 @@
     $ python main.py
     ```
 
-#### Setting up the API
+### Setting up the API
 1. В терминале откройте директорию `./API`.
 2. Создайте `.env` файл, скопировав в него содержимое файла `API/.env.sample`. Измените переменные `POSTGRES_PASSWORD`, `DB_USERNAME`, `DB_USER_PASSWORD`, `REDIS_PASSWORD` в соответствии с `parser/.env` файлом.
 3. Создайте виртуальное окружение, используя следующую команду
@@ -106,6 +105,6 @@
     ```
 7. Зайдите в браузер и перейдите по адресу `http://localhost:8000/`. Если вы увидите документацию к API, значит вы успешно запустили сервер и готовы к использованию API.
 
-### Обратная связь
+## Обратная связь
 - 0105artem@gmail.com
 - https://t.me/artemk0rn1lov
