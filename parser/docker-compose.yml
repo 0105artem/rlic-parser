@@ -21,10 +21,10 @@ services:
     container_name: postgres-docker
     image: postgres:14-alpine
     expose:
-      - "5555"
+      - "5432"
     ports:
-      - "5555:5555"
-    command: -p 5555
+      - "5432:5432"
+    command: -p 5432
     env_file:
       - .env
     volumes:
