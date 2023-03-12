@@ -1,6 +1,6 @@
 # [Парсер Лицензий Образовательных Организаций](https://artemkornilov.ru/docs)
 Добро пожаловать в Парсер Лицензий Образовательных Организаций (Rlic-Parser). Парсер забирает из [публичного реестра лицензий Рособрнадзора](https://islod.obrnadzor.gov.ru/rlic/) данные образовательных организаций с действующей лицензией. Данные сохраняются в базу данных PostgreSQL. Скачивайте и просматривайте свежие лицензии в считанные секунды с помощью API.
-## API Usage Examples
+## Примеры использования API
 - Get Licenses: Получить не более 1000 лицензий из базы данных.
     ```
     curl -XGET -L 'https://artemkornilov.ru/licenses/limit=2&offset=0'
@@ -18,13 +18,13 @@
     curl -XGET -L 'https://artemkornilov.ru/files/csv/active_licenses_06-03-2023_15.13.25.zip'
     ```
  
-## [API Documentation](https://artemkornilov.ru/docs)
+## [Документация API](https://artemkornilov.ru/docs)
 - Перейдите по ссылке https://artemkornilov.ru/docs чтобы увидеть полный список доступных запросов.
 
-## Setup
+## Установка
 Следуйте шагам описанными ниже, чтобы поднять окружение на локальной машине.
 
-### Dependencies
+### Зависимости
 - python 3.7+
 - Docker/Docker-Compose (optional) 
 - PostgreSQL (опционально если используете Docker) 
@@ -33,7 +33,7 @@
             
 ## Docker
 Если у вас установлен docker и docker-compose, то данный способ установки рекомендуемый, в противном случае следуйте инструкция по установке без Docker.
-### Setting up the parser
+### Установка парсера
 1. В терминале откройте директорию `./parser`, содержащую `docker-compose.yml` file.
 2. Создайте `.env` файл, скопировав в него содержимое файла `parser/.env.sample`. Измените следующие переменные:
    - `POSTGRES_PASSWORD` -- пароль к PostgreSQL пользователя postgres
@@ -42,15 +42,15 @@
    - `REDIS_PASSWORD` -- пароль для Redis Server
 3. Пропишите команду `docker-compose up --build -d` чтобы запустить сервис. Вы увидите как Docker построит и запустит контейнеры с парсером, Redis и PostgreSQL.
 
-### Setting up the API
+### Установка API
 1. После запуска Docker контейнеров с парсером, PostgreSQL и Redis откройте директорию `./API`.
 2. Создайте `.env` файл, скопировав в него содержимое файла `API/.env.sample`. Измените переменные `POSTGRES_PASSWORD`, `DB_USERNAME`, `DB_USER_PASSWORD`, `REDIS_PASSWORD` в соответствии с `parser/.env` файлом.
 3. Пропишите команду `docker-compose up --build -d` чтобы запустить сервер. Вы увидите как Docker построит и запустит контейнер с API.
 4. Зайдите в браузер и перейдите по адресу `http://localhost:8000/`. Если вы увидите документацию к API, значит вы успешно запустили сервер и готовы к использованию API.
 
-## Non-dockerized setting up
+## Установка без Docker
 Для работы данной установки понадобятся PostgreSQL и Redis-Server, локально установленные на вашей системе.
-### Setting up the parser
+### Установка парсера
 1. В терминале откройте директорию `./parser`
 2. Создайте `.env` файл, скопировав в него содержимое файла `parser/.env.sample`. Измените следующие переменные:
    - `POSTGRES_PASSWORD` -- пароль к PostgreSQL пользователя postgres
@@ -79,7 +79,7 @@
     $ python main.py
     ```
 
-### Setting up the API
+### Установка API
 1. В терминале откройте директорию `./API`.
 2. Создайте `.env` файл, скопировав в него содержимое файла `API/.env.sample`. Измените переменные `POSTGRES_PASSWORD`, `DB_USERNAME`, `DB_USER_PASSWORD`, `REDIS_PASSWORD` в соответствии с `parser/.env` файлом.
 3. Создайте виртуальное окружение, используя следующую команду
